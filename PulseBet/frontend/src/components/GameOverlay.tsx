@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Wallet, Info, CheckSquare, Square } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useLineraWallet } from '../hooks/useLineraWallet';
 
 interface GameOverlayProps {
     isConnected: boolean;
@@ -8,10 +9,28 @@ interface GameOverlayProps {
     gameId: string; // Unique ID for localStorage (e.g., 'bingo', 'rules_mines')
     gameTitle: string;
     rules: React.ReactNode;
+    isConnecting?: boolean;
 }
 
-export const GameOverlay = ({ isConnected, connect, gameId, gameTitle, rules }: GameOverlayProps) => {
+export const GameOverlay = ({ isConnected, connect, gameId, gameTitle, rules, isConnecting }: GameOverlayProps) => {
+    // Fall back to the provider state so every game shows the pending state without
+    // having to thread the prop through a dozen pages.
+    const { isConnecting: contextConnecting } = useLineraWallet();
+    const pending = isConnecting ?? contextConnecting;
     const [showRules, setShowRules] = useState(false);
+    // Guard against double-clicks while the session is being created.
+    const requestedRef = useRef(false);
+
+    const handleStart = () => {
+        if (requestedRef.current) return;
+        requestedRef.current = true;
+        connect();
+    };
+
+    // Reset the guard once the attempt settled (success or failure).
+    useEffect(() => {
+        if (!pending) requestedRef.current = false;
+    }, [pending]);
     const [dontShowAgain, setDontShowAgain] = useState(false);
 
     // Check if rules should be shown on mount (only if connected)
@@ -58,11 +77,19 @@ export const GameOverlay = ({ isConnected, connect, gameId, gameTitle, rules }: 
                         </div>
 
                         <button
-                            onClick={connect}
-                            className="w-full px-8 py-4 bg-white hover:bg-zinc-200 text-black font-black rounded-xl transition-all shadow-lg text-sm uppercase tracking-widest transform active:scale-[0.98]"
+                            onClick={handleStart}
+                            disabled={!!pending}
+                            className="w-full px-8 py-4 bg-white hover:bg-zinc-200 text-black font-black rounded-xl transition-all shadow-lg text-sm uppercase tracking-widest transform active:scale-[0.98] disabled:opacity-60 disabled:cursor-wait"
                         >
-                            Start {gameTitle}
+                            {pending ? "Starting session..." : `Start ${gameTitle}`}
                         </button>
+
+                        {pending && (
+                            <div className="flex items-center justify-center gap-2 text-[11px] font-mono uppercase tracking-widest text-zinc-500">
+                                <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-ping" />
+                                Claiming your microchain
+                            </div>
+                        )}
 
                         <p className="text-[11px] text-zinc-500 leading-relaxed">
                             Tip: grab testnet tokens on the{" "}

@@ -52,17 +52,114 @@ const ensureWasm = () => {
     return wasmReady;
 };
 
-const faucetUrl = () => {
+const DIRECT_FAUCET_URL = "https://faucet.testnet-conway.linera.net";
+
+/**
+ * Faucet endpoints, most specific first.
+ *
+ * The same-origin `/faucet-proxy` is normally used (CORS + Vercel rewrite), but it
+ * only works when the *server* running the dev/preview proxy can reach the testnet.
+ * If that proxy is unreachable we fall back to calling the public faucet directly
+ * from the browser, which is what makes the button work in restricted environments
+ * instead of failing silently.
+ */
+const faucetUrls = (): string[] => {
     const configured = import.meta.env.VITE_LINERA_FAUCET_URL?.trim();
-    if (configured) return configured;
-    if (typeof window !== "undefined") return window.location.origin + "/faucet-proxy";
-    return "https://faucet.testnet-conway.linera.net";
+    const list: string[] = [];
+    if (configured) list.push(configured);
+    if (typeof window !== "undefined") list.push(window.location.origin + "/faucet-proxy");
+    list.push(DIRECT_FAUCET_URL);
+    return [...new Set(list)];
 };
 
-const nodeUrl = () =>
+/** Claims a chain, transparently retrying on the next faucet endpoint. */
+const claimChainWithFallback = async (owner: string) => {
+    let lastError: unknown = null;
+    for (const url of faucetUrls()) {
+        try {
+            const faucet = new Faucet(url);
+            const wallet = await faucet.createWallet();
+            const chain = await faucet.claimChain(wallet, owner);
+            console.info("Faucet used:", url);
+            return { chain, wallet, faucetUrl: url };
+        } catch (e) {
+            console.warn(`Faucet ${url} failed, trying next endpoint...`, e);
+            lastError = e;
+        }
+    }
+    throw lastError ?? new Error("No faucet endpoint reachable");
+};
+
+/** Just the wallet (genesis/config), without claiming a chain. */
+const createWalletWithFallback = async () => {
+    let lastError: unknown = null;
+    for (const url of faucetUrls()) {
+        try {
+            const wallet = await new Faucet(url).createWallet();
+            return wallet;
+        } catch (e) {
+            console.warn(`Wallet from ${url} failed, trying next endpoint...`, e);
+            lastError = e;
+        }
+    }
+    throw lastError ?? new Error("No faucet endpoint reachable");
+};
+
+const configuredNodeUrl = () =>
     import.meta.env.VITE_LINERA_NODE_URL?.trim() ||
     import.meta.env.VITE_LINERA_TARGET_URL?.trim() ||
     DEFAULT_NODE_URL;
+
+/**
+ * The wasm client talks GraphQL to a validator. `/node-proxy` is the default, but it
+ * lives on the machine serving the app: if that machine cannot reach the Linera
+ * testnet (sandboxed preview, offline dev box) every block query fails and the games
+ * look dead. We therefore probe the candidates and keep the first one that answers.
+ */
+const nodeCandidates = (): string[] => {
+    const list: string[] = [];
+    const configured = configuredNodeUrl();
+    if (configured.startsWith("/") && typeof window !== "undefined") {
+        list.push(window.location.origin + configured);
+    } else if (configured) {
+        list.push(configured);
+    }
+    if (typeof window !== "undefined") list.push(window.location.origin + "/node-proxy");
+    list.push(DEFAULT_NODE_URL);
+    return [...new Set(list)];
+};
+
+let resolvedNodeUrl: string | null = null;
+const resolveNodeUrl = async (): Promise<string> => {
+    if (resolvedNodeUrl) return resolvedNodeUrl;
+
+    for (const candidate of nodeCandidates()) {
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), 5000);
+        try {
+            const res = await fetch(candidate, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ query: "{ chains { list } }" }),
+                signal: controller.signal,
+            });
+            if (res.ok || res.status === 400) {
+                // 400 still proves the GraphQL endpoint is reachable.
+                console.info("Linera node in use:", candidate);
+                resolvedNodeUrl = candidate;
+                return candidate;
+            }
+        } catch (e) {
+            console.warn(`Node ${candidate} unreachable, trying next...`, e);
+        } finally {
+            clearTimeout(timer);
+        }
+    }
+
+    console.warn("No Linera node answered, falling back to", DEFAULT_NODE_URL);
+    resolvedNodeUrl = DEFAULT_NODE_URL;
+    return resolvedNodeUrl;
+};
 
 /** Extracts the raw private key out of a Linera PrivateKey signer (runtime field). */
 const secretOf = (signer: any): string | null => {
@@ -107,12 +204,12 @@ export const LineraWalletProvider = ({ children }: { children: React.ReactNode }
     }, [isConnected, chainId, fetchBalance]);
 
     /** Builds (or rebuilds) the client for an existing session key. */
-    const bootClient = useCallback(async (signer: any, chain: string) => {
-        const faucet = new Faucet(faucetUrl());
-        const wallet = await faucet.createWallet();
+    const bootClient = useCallback(async (signer: any, chain: string, walletOverride?: any) => {
+        const wallet = walletOverride ?? (await createWalletWithFallback());
         wallet.setOwner(chain, signer.address());
 
-        const client = await new Client(wallet, signer, { validators: [nodeUrl()] } as any);
+        const validators = [await resolveNodeUrl()];
+        const client = await new Client(wallet, signer, { validators } as any);
         const chainHandle = await client.chain(chain);
         const bal = await chainHandle.balance();
 
@@ -192,10 +289,9 @@ export const LineraWalletProvider = ({ children }: { children: React.ReactNode }
             const signer = linera.signer.PrivateKey.createRandom();
             const sessionOwner = signer.address();
 
-            // 2. Claim a microchain owned by that key.
-            const faucet = new Faucet(faucetUrl());
-            const wallet = await faucet.createWallet();
-            const chain = await faucet.claimChain(wallet, sessionOwner);
+            // 2. Claim a microchain owned by that key (with endpoint fallback).
+            const { chain, wallet: claimedWallet } = await claimChainWithFallback(sessionOwner);
+            const wallet = claimedWallet;
             wallet.setOwner(chain, sessionOwner);
 
             // 3. Persist before connecting, so a reload can resume the session.
@@ -205,7 +301,8 @@ export const LineraWalletProvider = ({ children }: { children: React.ReactNode }
             localStorage.setItem(LS_CHAIN_ID, chain);
 
             // 4. Single signer for both background reads and mutations.
-            const client = await new Client(wallet, signer, { validators: [nodeUrl()] } as any);
+            const validators = [await resolveNodeUrl()];
+            const client = await new Client(wallet, signer, { validators } as any);
             const chainHandle = await client.chain(chain);
             const bal = await chainHandle.balance();
 
@@ -274,9 +371,7 @@ export const LineraWalletProvider = ({ children }: { children: React.ReactNode }
     const requestFaucet = useCallback(async () => {
         if (!owner) return;
         try {
-            const faucet = new Faucet(faucetUrl());
-            const wallet = await faucet.createWallet();
-            const chain = await faucet.claimChain(wallet, owner);
+            const { chain } = await claimChainWithFallback(owner);
             localStorage.setItem(LS_CHAIN_ID, chain);
             await fetchBalance();
         } catch (e: any) {
