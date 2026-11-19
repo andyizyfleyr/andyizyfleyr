@@ -39,7 +39,8 @@ export const usePulseToken = () => {
         // async-graphql expects: {"query": "..."} not just the raw query string
         const requestBody = JSON.stringify({ query: mutation });
         const app = await getApplication(PULSE_TOKEN_APP_ID);
-        await app.query(requestBody);
+        // Single session key: the owner IS the signer, so the mint is authorized.
+        await app.query(requestBody, { owner });
 
         await fetchTokenBalance();
     }, [getApplication, client, chainId, owner, fetchTokenBalance]);

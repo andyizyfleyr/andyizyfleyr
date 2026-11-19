@@ -247,7 +247,7 @@ export const Mines = () => {
                 {/* Action Buttons */}
                 {!isConnected ? (
                     <button onClick={connect} className="w-full bg-white hover:bg-zinc-200 text-black font-bold py-4 rounded-xl shadow-lg transition-all transform active:scale-[0.99] uppercase tracking-wider text-sm">
-                        INITIALIZE WALLET
+                        START PLAYING
                     </button>
                 ) : isGameActive ? (
                     <button onClick={cashOut} disabled={loading} className="w-full bg-white hover:bg-zinc-200 text-black font-bold py-4 rounded-xl shadow-lg shadow-white/10 transition-all disabled:opacity-50 disabled:cursor-not-allowed uppercase tracking-wider relative overflow-hidden group">

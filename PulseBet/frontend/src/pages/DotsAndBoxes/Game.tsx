@@ -118,7 +118,7 @@ export const DotsAndBoxesGame = () => {
 
                 {!isConnected ? (
                     <button onClick={connect} disabled={isConnecting} className="w-full bg-white hover:bg-zinc-200 text-black font-bold py-4 rounded-xl shadow-lg transition-all uppercase tracking-wider text-sm disabled:opacity-70 disabled:cursor-not-allowed">
-                        {isConnecting ? "Connecting..." : "Connect Wallet"}
+                        {isConnecting ? "Starting session..." : "Start Playing"}
                     </button>
                 ) : (
                     <>

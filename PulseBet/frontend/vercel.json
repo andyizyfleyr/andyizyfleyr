@@ -16,6 +16,14 @@
   ],
   "rewrites": [
     {
+      "source": "/node-proxy",
+      "destination": "https://testnet-conway.linera.net"
+    },
+    {
+      "source": "/node-proxy/(.*)",
+      "destination": "https://testnet-conway.linera.net/$1"
+    },
+    {
       "source": "/faucet-proxy",
       "destination": "https://faucet.testnet-conway.linera.net"
     },

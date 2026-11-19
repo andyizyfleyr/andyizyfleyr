@@ -387,7 +387,7 @@ export const ColorTrading = () => {
                             <div className="w-full md:w-auto">
                                 {!isConnected ? (
                                     <button onClick={connect} className="bg-white text-black font-black px-12 py-5 rounded-2xl hover:scale-105 active:scale-95 transition-all text-sm uppercase tracking-widest shadow-xl shadow-white/10">
-                                        Initialize Wallet
+                                        Start Session
                                     </button>
                                 ) : (
                                     <div className="bg-zinc-950 border border-zinc-800 px-8 py-5 rounded-2xl flex flex-col items-center">

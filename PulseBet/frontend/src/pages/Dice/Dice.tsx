@@ -192,7 +192,7 @@ const Dice = () => {
                     {/* Action Button */}
                     {!isConnected ? (
                         <button onClick={connect} className="w-full py-4 mt-auto bg-white text-black rounded-xl font-black text-xl uppercase tracking-widest hover:bg-zinc-200 shadow-lg transform active:scale-[0.98] transition-all">
-                            Connect Wallet
+                            Start Playing
                         </button>
                     ) : (
                         <button

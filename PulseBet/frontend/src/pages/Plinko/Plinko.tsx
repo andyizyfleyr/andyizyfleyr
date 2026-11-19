@@ -245,7 +245,7 @@ export const Plinko = () => {
 
                 {!isConnected ? (
                     <button onClick={connect} className="w-full bg-pink-600 hover:bg-pink-500 text-white font-black py-5 rounded-2xl shadow-xl transition-all transform active:scale-[0.98] uppercase tracking-widest text-sm shadow-pink-900/20">
-                        Initializing System...
+                        Start Playing
                     </button>
                 ) : isGameActive ? (
                     <button disabled className="w-full bg-zinc-800 text-zinc-500 font-bold py-5 rounded-2xl cursor-not-allowed uppercase tracking-widest flex items-center justify-center gap-3 border border-zinc-700/50">

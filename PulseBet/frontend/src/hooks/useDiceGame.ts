@@ -96,7 +96,7 @@ export const useDiceGame = () => {
             const requestBody = JSON.stringify({ query: mutation });
             console.log("[Dice] Sending transaction...");
 
-            // Explicitly use user owner for payment/mutation to trigger MetaMask
+            // Session key owner signs the paid mutation
             const result = await app.query(requestBody, { owner });
             console.log("[Dice] Transaction result:", result);
 

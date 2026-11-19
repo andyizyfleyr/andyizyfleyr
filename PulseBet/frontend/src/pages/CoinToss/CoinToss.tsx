@@ -223,7 +223,7 @@ export const CoinToss = () => {
                 {/* Action Button */}
                 {!isConnected ? (
                     <button onClick={connect} className="w-full bg-white hover:bg-zinc-200 text-black font-bold py-4 rounded-xl shadow-lg transition-all transform active:scale-[0.99] uppercase tracking-wider text-sm">
-                        INITIALIZE WALLET
+                        START PLAYING
                     </button>
                 ) : (
                     <button

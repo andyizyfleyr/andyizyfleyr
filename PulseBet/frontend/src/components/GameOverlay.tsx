@@ -10,7 +10,7 @@ interface GameOverlayProps {
     rules: React.ReactNode;
 }
 
-export const GameOverlay = ({ isConnected, gameId, gameTitle, rules }: GameOverlayProps) => {
+export const GameOverlay = ({ isConnected, connect, gameId, gameTitle, rules }: GameOverlayProps) => {
     const [showRules, setShowRules] = useState(false);
     const [dontShowAgain, setDontShowAgain] = useState(false);
 
@@ -50,11 +50,27 @@ export const GameOverlay = ({ isConnected, gameId, gameTitle, rules }: GameOverl
                         </div>
 
                         <div className="space-y-3">
-                            <h2 className="text-3xl font-black text-white tracking-tighter">Connect Wallet</h2>
+                            <h2 className="text-3xl font-black text-white tracking-tighter">Start Playing</h2>
                             <p className="text-zinc-400 text-sm font-medium">
-                                You need to connect your wallet to verify your identity and play {gameTitle}.
+                                A local session key is created for you and a Linera microchain is claimed.
+                                No wallet extension is required. Your session is kept across reloads.
                             </p>
                         </div>
+
+                        <button
+                            onClick={connect}
+                            className="w-full px-8 py-4 bg-white hover:bg-zinc-200 text-black font-black rounded-xl transition-all shadow-lg text-sm uppercase tracking-widest transform active:scale-[0.98]"
+                        >
+                            Start {gameTitle}
+                        </button>
+
+                        <p className="text-[11px] text-zinc-500 leading-relaxed">
+                            Tip: grab testnet tokens on the{" "}
+                            <a href="/mining/faucets" className="text-zinc-300 underline underline-offset-2 hover:text-white">
+                                Faucets page
+                            </a>{" "}
+                            to stake PulseTokens.
+                        </p>
                     </div>
                 </motion.div>
             )}

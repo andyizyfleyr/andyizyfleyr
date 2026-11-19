@@ -85,6 +85,12 @@ export function Header({ toggleSidebar }: HeaderProps) {
             <div className="flex items-center gap-4">
                 {isConnected ? (
                     <div className="flex items-center gap-6">
+                        {/* Session key badge (single signer: same key plays and signs) */}
+                        <div className="hidden xl:flex items-center gap-2 px-3 py-1.5 bg-zinc-950 rounded-lg border border-emerald-900/40">
+                            <Zap className="w-3 h-3 text-emerald-400 fill-emerald-400/20" />
+                            <span className="text-xs font-mono text-emerald-300/90">Session key</span>
+                        </div>
+
                         {/* Token Balance */}
                         <div className="hidden md:flex flex-col items-end">
                             <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Available</span>
@@ -147,8 +153,8 @@ export function Header({ toggleSidebar }: HeaderProps) {
                     <button
                         onClick={() => {
                             connect();
-                            const id = toast.loading("Please wait for MetaMask popup", {
-                                description: "This confirmation is to authorize the Auto-Signer for instant play.",
+                            const id = toast.loading("Creating your session key", {
+                                description: "A local key is generated and a Linera microchain is claimed for you. No extension needed.",
                                 duration: 10000,
                                 style: {
                                     background: '#000',
@@ -162,7 +168,7 @@ export function Header({ toggleSidebar }: HeaderProps) {
                         className="flex items-center gap-2 px-5 py-2 rounded-lg bg-white hover:bg-zinc-200 text-black font-bold text-sm transition-all transform active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
                     >
                         <Wallet className="w-4 h-4" />
-                        <span>{isConnecting ? "Connecting..." : "Connect Metamask"}</span>
+                        <span>{isConnecting ? "Starting session..." : "Start Playing"}</span>
                     </button>
                 )}
             </div>

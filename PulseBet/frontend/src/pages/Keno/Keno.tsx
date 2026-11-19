@@ -270,7 +270,7 @@ export const Keno = () => {
 
                 {!isConnected ? (
                     <button onClick={connect} className="w-full bg-white text-black font-black py-4 rounded-xl shadow-lg uppercase tracking-wider text-sm">
-                        Connect Wallet
+                        Start Playing
                     </button>
                 ) : (
                     <button

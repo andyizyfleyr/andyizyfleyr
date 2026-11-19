@@ -57,16 +57,18 @@ export function ChangelogOverlay() {
                                     <Zap className="w-5 h-5 text-emerald-400" />
                                 </div>
                                 <div>
-                                    <h3 className="text-lg font-bold text-white mb-1">Seamless Auto-Signer</h3>
+                                    <h3 className="text-lg font-bold text-white mb-1">Extension-free Sessions</h3>
                                     <p className="text-zinc-400 text-sm leading-relaxed mb-3">
-                                        Checking the header badge? That's our new <strong>Session Key</strong> system! Thanks to <a href="https://app.akindo.io/users/deuszx" target="_blank" rel="noopener noreferrer" className="text-emerald-400 font-semibold hover:underline">@deuszx</a> and <a href="https://app.akindo.io/users/ma2bd" target="_blank" rel="noopener noreferrer" className="text-emerald-400 font-semibold hover:underline">@ma2bd</a>,
-                                        you can now play games instantly. The Autosigner handles all your fast-paced gameplay moves in the background without annoying interruptions.
+                                        No browser wallet, no popups, no gas prompts. Clicking <strong>Start Playing</strong> generates a
+                                        local session key in your browser and claims a Linera microchain owned by it. Every move is signed
+                                        instantly by that single key, so the games settle on chain without a single interruption.
                                     </p>
                                     <div className="p-3 bg-zinc-950/80 border border-zinc-800 rounded-lg">
                                         <p className="text-xs text-zinc-400 leading-normal">
-                                            <span className="text-amber-500 font-bold block mb-1">Why do I still see MetaMask popups?</span>
-                                            For your security, <strong>money matters are strictly explicit.</strong> Any action that moves your PulseTokens—like
-                                            <span className="text-zinc-300"> Staking, Betting, or Claiming Rewards</span>—will <strong>ALWAYS</strong> require a clear MetaMask popup confirmation. The Autosigner only signs the valid game moves <em>after</em> you've securely staked your tokens.
+                                            <span className="text-amber-500 font-bold block mb-1">What happens to my session key?</span>
+                                            It is stored locally in this browser and reused on reload, so your chain and balance come back
+                                            automatically. Use <span className="text-zinc-300">Disconnect</span> to wipe it and start a brand-new
+                                            chain. Never share your session key: it signs for your account.
                                         </p>
                                     </div>
                                 </div>

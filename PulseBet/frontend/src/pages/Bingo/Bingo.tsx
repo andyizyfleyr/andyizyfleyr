@@ -141,7 +141,7 @@ export const Bingo = () => {
                             onClick={connect}
                             className="w-full bg-white hover:bg-zinc-200 text-black font-bold py-3 rounded-xl transition-all uppercase tracking-wider text-sm"
                         >
-                            Connect Wallet
+                            Start Playing
                         </button>
                     </div>
                 ) : !isInGame ? (

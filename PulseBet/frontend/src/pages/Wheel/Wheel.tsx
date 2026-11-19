@@ -219,7 +219,7 @@ export const Wheel = () => {
 
                 {!isConnected ? (
                     <button onClick={connect} className="w-full bg-purple-600 hover:bg-purple-500 text-white font-black py-5 rounded-2xl shadow-xl transition-all uppercase tracking-widest text-sm shadow-purple-900/20">
-                        Initializing System...
+                        Start Playing
                     </button>
                 ) : (
                     <button

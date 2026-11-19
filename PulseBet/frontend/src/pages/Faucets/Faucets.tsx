@@ -131,7 +131,7 @@ export default function Faucets() {
                 {!owner && (
                     <div className="flex items-center justify-center gap-2 p-4 rounded-xl border border-zinc-800 bg-zinc-900/50 text-zinc-500 text-sm">
                         <span className="w-2 h-2 bg-yellow-500/50 rounded-full animate-pulse"></span>
-                        Wallet connection required for interaction
+                        Start a session to interact
                     </div>
                 )}
             </div>
