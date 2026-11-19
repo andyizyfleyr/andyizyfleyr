@@ -34,10 +34,10 @@ export default function Faucets() {
                     </div>
                     <div className="space-y-1">
                         <h1 className="text-6xl font-bold tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-zinc-500">
-                            Asset Faucets.
+                            Chips & Faucets.
                         </h1>
                         <p className="text-lg text-zinc-500 max-w-md leading-relaxed">
-                            Request testnet liquidity. Mint PulseTokens for protocol interaction.
+                            Top up your local balance with PulseTokens and keep playing.
                         </p>
                     </div>
                 </div>
@@ -55,15 +55,15 @@ export default function Faucets() {
                                         <Coins className="w-6 h-6 text-white" />
                                     </div>
                                     <div>
-                                        <h2 className="text-xl font-bold text-white tracking-tight">Linera Native</h2>
-                                        <p className="text-xs text-zinc-500 uppercase tracking-widest font-medium">L1 Blockchain</p>
+                                        <h2 className="text-xl font-bold text-white tracking-tight">Local Wallet</h2>
+                                        <p className="text-xs text-zinc-500 uppercase tracking-widest font-medium">Demo mode</p>
                                     </div>
                                 </div>
 
                                 <div className="space-y-1">
                                     <div className="text-xs font-medium text-zinc-500 uppercase tracking-widest">Current Balance</div>
                                     <div className="text-3xl font-mono font-bold text-white tracking-tight">
-                                        {balance || '0'} <span className="text-lg text-zinc-600">LINERA</span>
+                                        {balance || '0'} <span className="text-lg text-zinc-600">PT</span>
                                     </div>
                                 </div>
                             </div>

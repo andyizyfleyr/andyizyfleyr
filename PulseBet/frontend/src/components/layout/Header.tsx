@@ -10,11 +10,10 @@ interface HeaderProps {
 }
 
 export function Header({ toggleSidebar }: HeaderProps) {
-    const { isConnected, connect, disconnect, chainId, balance, owner, autosignerOwner, isConnecting } = useLineraWallet();
+    const { isConnected, connect, disconnect, balance, owner, autosignerOwner, isConnecting } = useLineraWallet();
     const { tokenBalance } = usePulseToken();
     const navigate = useNavigate();
     const [copiedAddress, setCopiedAddress] = useState(false);
-    const [copiedChainId, setCopiedChainId] = useState(false);
     const [copiedAutosigner, setCopiedAutosigner] = useState(false);
     const [toastId, setToastId] = useState<string | number | null>(null);
 
@@ -49,15 +48,12 @@ export function Header({ toggleSidebar }: HeaderProps) {
         }
     }, [isConnecting, toastId, isConnected]);
 
-    const copyToClipboard = async (text: string, type: 'address' | 'chainId' | 'autosigner') => {
+    const copyToClipboard = async (text: string, type: 'address' | 'autosigner') => {
         try {
             await navigator.clipboard.writeText(text);
             if (type === 'address') {
                 setCopiedAddress(true);
                 setTimeout(() => setCopiedAddress(false), 2000);
-            } else if (type === 'chainId') {
-                setCopiedChainId(true);
-                setTimeout(() => setCopiedChainId(false), 2000);
             } else {
                 setCopiedAutosigner(true);
                 setTimeout(() => setCopiedAutosigner(false), 2000);
@@ -85,15 +81,15 @@ export function Header({ toggleSidebar }: HeaderProps) {
             <div className="flex items-center gap-4">
                 {isConnected ? (
                     <div className="flex items-center gap-6">
-                        {/* Session key badge (single signer: same key plays and signs) */}
+                        {/* Demo mode badge */}
                         <div className="hidden xl:flex items-center gap-2 px-3 py-1.5 bg-zinc-950 rounded-lg border border-emerald-900/40">
                             <Zap className="w-3 h-3 text-emerald-400 fill-emerald-400/20" />
-                            <span className="text-xs font-mono text-emerald-300/90">Session key</span>
+                            <span className="text-xs font-mono text-emerald-300/90">Local demo</span>
                         </div>
 
                         {/* Token Balance */}
                         <div className="hidden md:flex flex-col items-end">
-                            <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Available</span>
+                            <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Balance</span>
                             <div className="flex items-center gap-2">
                                 <span className="font-mono font-bold text-white text-sm">
                                     {tokenBalance ?? "0"} PulseToken
@@ -108,15 +104,7 @@ export function Header({ toggleSidebar }: HeaderProps) {
                         {/* Network Info */}
                         <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 bg-zinc-950 rounded-lg border border-zinc-800">
                             <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
-                            <span className="text-xs font-mono text-zinc-400 truncate max-w-[100px]">
-                                {chainId ? `${chainId.slice(0, 8)}...` : "Loading..."}
-                            </span>
-                            <button
-                                onClick={() => chainId && copyToClipboard(chainId, 'chainId')}
-                                className="text-zinc-600 hover:text-white transition-colors"
-                            >
-                                {copiedChainId ? <Check className="w-3 h-3 text-white" /> : <Copy className="w-3 h-3" />}
-                            </button>
+                            <span className="text-xs font-mono text-zinc-400 truncate max-w-[100px]">Offline play</span>
                         </div>
 
                         <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 bg-zinc-950 rounded-lg border border-zinc-800 group hover:border-emerald-500/50 transition-colors cursor-pointer"
@@ -144,7 +132,7 @@ export function Header({ toggleSidebar }: HeaderProps) {
                         <button
                             onClick={disconnect}
                             className="p-2 text-zinc-500 hover:text-white hover:bg-zinc-800 rounded-lg transition-all"
-                            title="Disconnect"
+                            title="Reset session"
                         >
                             <LogOut className="w-4 h-4" />
                         </button>
@@ -153,8 +141,8 @@ export function Header({ toggleSidebar }: HeaderProps) {
                     <button
                         onClick={() => {
                             connect();
-                            const id = toast.loading("Creating your session key", {
-                                description: "A local key is generated and a Linera microchain is claimed for you. No extension needed.",
+                            const id = toast.loading("Starting local game session", {
+                                description: "Games run in your browser: no key, no wallet, no network.",
                                 duration: 10000,
                                 style: {
                                     background: '#000',

@@ -71,8 +71,8 @@ export const GameOverlay = ({ isConnected, connect, gameId, gameTitle, rules, is
                         <div className="space-y-3">
                             <h2 className="text-3xl font-black text-white tracking-tighter">Start Playing</h2>
                             <p className="text-zinc-400 text-sm font-medium">
-                                A local session key is created for you and a Linera microchain is claimed.
-                                No wallet extension is required. Your session is kept across reloads.
+                                Games run instantly in your browser. No key, no wallet, no waiting.
+                                You start with 1,000 PulseTokens and can top up any time.
                             </p>
                         </div>
 
@@ -92,7 +92,7 @@ export const GameOverlay = ({ isConnected, connect, gameId, gameTitle, rules, is
                         )}
 
                         <p className="text-[11px] text-zinc-500 leading-relaxed">
-                            Tip: grab testnet tokens on the{" "}
+                            Need chips? Top up on the{" "}
                             <a href="/mining/faucets" className="text-zinc-300 underline underline-offset-2 hover:text-white">
                                 Faucets page
                             </a>{" "}

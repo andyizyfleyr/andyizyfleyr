@@ -57,18 +57,17 @@ export function ChangelogOverlay() {
                                     <Zap className="w-5 h-5 text-emerald-400" />
                                 </div>
                                 <div>
-                                    <h3 className="text-lg font-bold text-white mb-1">Extension-free Sessions</h3>
+                                    <h3 className="text-lg font-bold text-white mb-1">Instant Play, No Keys</h3>
                                     <p className="text-zinc-400 text-sm leading-relaxed mb-3">
-                                        No browser wallet, no popups, no gas prompts. Clicking <strong>Start Playing</strong> generates a
-                                        local session key in your browser and claims a Linera microchain owned by it. Every move is signed
-                                        instantly by that single key, so the games settle on chain without a single interruption.
+                                        No browser wallet, no popups, no gas prompts. The public Linera testnet this app was built on has been
+                                        shut down, so the games now run entirely in your browser with the same rules and payout tables.
+                                        Press <strong>Start Playing</strong> and you are in.
                                     </p>
                                     <div className="p-3 bg-zinc-950/80 border border-zinc-800 rounded-lg">
                                         <p className="text-xs text-zinc-400 leading-normal">
-                                            <span className="text-amber-500 font-bold block mb-1">What happens to my session key?</span>
-                                            It is stored locally in this browser and reused on reload, so your chain and balance come back
-                                            automatically. Use <span className="text-zinc-300">Disconnect</span> to wipe it and start a brand-new
-                                            chain. Never share your session key: it signs for your account.
+                                            <span className="text-amber-500 font-bold block mb-1">Where is my balance stored?</span>
+                                            Locally in this browser, starting at 1,000 PulseTokens. A round settles the moment you play it.
+                                            Use the{" "}Faucets page to top up, and <span className="text-zinc-300">Disconnect</span> to reset.
                                         </p>
                                     </div>
                                 </div>
