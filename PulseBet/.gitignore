@@ -1,0 +1,14 @@
+/frontend/node_modules
+/contracts/mines/target
+/contracts/pulse_token/target
+/contracts/memory_game/target
+/contracts/color_trading/target
+/contracts/wordle/target
+/contracts/bingo/target
+/scripts/node_modules
+/contracts/dots_and_boxes/target
+/contracts/plinko/target
+/contracts/wheel/target
+/contracts/dice/target
+/contracts/keno/target
+/contracts/coin_toss/target
